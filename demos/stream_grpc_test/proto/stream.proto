@@ -1,0 +1,39 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+option go_package =".;proto_bak";
+
+enum Gender{
+  MALE=0;
+  FEMALE=1;
+}
+
+service Greeter{
+  rpc GetStream(StreamReqData) returns (stream StreamResData); // 服务端流模式
+  rpc PutStream(stream StreamReqData) returns (StreamResData); // 客户端流模式
+  rpc AllStream(stream StreamReqData) returns (stream StreamResData); // 双向流模式
+}
+
+message StreamReqData{
+  string data=1;
+  string name=2;
+  Gender g=3;
+  // 外界使用 G: proto_bak.Gender_MALE,
+  map<string,string> mp=4;
+  // 外界使用
+  /* 
+  Mp:map[string]string{
+    "name":"coder",
+    "gender":"male",
+  }
+  */
+  google.protobuf.Timestamp addTime=5;
+  /*
+  // 注意导入路径 
+  // timestamppb "google.golang.org/protobuf/types/known/timestamppb"
+  AddTime: timestamppb.New(time.Now())
+  */
+}
+
+message StreamResData{
+  string data=1;
+}
